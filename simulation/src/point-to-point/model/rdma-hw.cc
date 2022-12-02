@@ -56,7 +56,7 @@ TypeId RdmaHw::GetTypeId (void)
 				MakeBooleanChecker())
 		.AddAttribute("EwmaGain",
 				"Control gain parameter which determines the level of rate decrease",
-				DoubleValue(1.0 / 16),
+				DoubleValue(1.0 / 1024),
 				MakeDoubleAccessor(&RdmaHw::m_g),
 				MakeDoubleChecker<double>())
 		.AddAttribute ("RateOnFirstCnp",
@@ -616,6 +616,7 @@ void RdmaHw::ChangeRate(Ptr<RdmaQueuePair> qp, DataRate new_rate){
  * Mellanox's version of DCQCN
  *****************************/
 void RdmaHw::UpdateAlphaMlx(Ptr<RdmaQueuePair> q){
+	fprintf(stdout, "%ld %d alpha %f cnp_received %d\n", Simulator::Now().GetNanoSeconds(), m_node->GetId(), q->mlx.m_alpha, (int)q->mlx.m_alpha_cnp_arrived , 0);
 	#if PRINT_LOG
 	//std::cout << Simulator::Now() << " alpha update:" << m_node->GetId() << ' ' << q->mlx.m_alpha << ' ' << (int)q->mlx.m_alpha_cnp_arrived << '\n';
 	//printf("%lu alpha update: %08x %08x %u %u %.6lf->", Simulator::Now().GetTimeStep(), q->sip.Get(), q->dip.Get(), q->sport, q->dport, q->mlx.m_alpha);
@@ -640,7 +641,7 @@ void RdmaHw::cnp_received_mlx(Ptr<RdmaQueuePair> q){
 	q->mlx.m_decrease_cnp_arrived = true; // set CNP_arrived bit for rate decrease
 	if (q->mlx.m_first_cnp){
 		// init alpha
-		q->mlx.m_alpha = 1;
+		q->mlx.m_alpha = 0;
 		q->mlx.m_alpha_cnp_arrived = false;
 		// schedule alpha update
 		ScheduleUpdateAlphaMlx(q);
@@ -663,11 +664,16 @@ void RdmaHw::CheckRateDecreaseMlx(Ptr<RdmaQueuePair> q){
 			if (q->mlx.m_rpTimeStage == 0)
 				clamp = false;
 		}
-		if (clamp)
+		if (clamp) {
 			q->mlx.m_targetRate = q->m_rate;
-		q->m_rate = std::max(m_minRate, q->m_rate * (1 - q->mlx.m_alpha / 2));
+		}
+		q->m_rate = std::max(m_minRate, q->m_rate * (1 - q->mlx.m_alpha / 4));
+		// stage
 		// reset rate increase related things
 		q->mlx.m_rpTimeStage = 0;
+		fprintf(stdout, "%ld %d stage %ld\n", Simulator::Now().GetNanoSeconds(), m_node->GetId(), std::min(q->mlx.m_rpTimeStage, m_rpgThreshold + 1));
+		fprintf(stdout, "%ld %d target_rate %ld\n", Simulator::Now().GetNanoSeconds(), m_node->GetId(), q->mlx.m_targetRate);
+		fprintf(stdout, "%ld %d rate %ld\n", Simulator::Now().GetNanoSeconds(), m_node->GetId(), q->m_rate);
 		q->mlx.m_decrease_cnp_arrived = false;
 		Simulator::Cancel(q->mlx.m_rpTimer);
 		q->mlx.m_rpTimer = Simulator::Schedule(MicroSeconds(m_rpgTimeReset), &RdmaHw::RateIncEventTimerMlx, this, q);
@@ -694,6 +700,9 @@ void RdmaHw::RateIncEventMlx(Ptr<RdmaQueuePair> q){
 	}else { // hyper increase
 		HyperIncreaseMlx(q);
 	}
+	fprintf(stdout, "%ld %d stage %ld\n", Simulator::Now().GetNanoSeconds(), m_node->GetId(), std::min(q->mlx.m_rpTimeStage, m_rpgThreshold + 1));
+	fprintf(stdout, "%ld %d target_rate %ld\n", Simulator::Now().GetNanoSeconds(), m_node->GetId(), q->mlx.m_targetRate);
+	fprintf(stdout, "%ld %d rate %ld\n", Simulator::Now().GetNanoSeconds(), m_node->GetId(), q->m_rate);
 }
 
 void RdmaHw::FastRecoveryMlx(Ptr<RdmaQueuePair> q){
