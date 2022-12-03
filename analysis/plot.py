@@ -22,16 +22,14 @@ def main(data_reader, node_id):
     bandwidth = data_reader.get_node_bandwidth(node_id)
 
     ts_list = sorted(bandwidth.keys())
-    for ts in range(ts_list[0], ts_list[-1] + 1):
-        if bandwidth.get(ts) == None:
-            bandwidth[ts] = 0
     X, Y = get_X_Y_from_ts_dict(bandwidth)
-    Y = [(each * BW_MULTIPLY_UNDER_TS_WINDOW) / (1 << 30) for each in Y]
+    X = [each / 1000000 for each in X]
+    Y = [(each * BW_MULTIPLY_UNDER_TS_WINDOW) * 8 / 1000000000 for each in Y]
 
     fig, ax = plt.subplots(1, 1)
     ax.plot(X, Y, color="blue", label = "Deliver Rate")
-    plt.xlabel("timestamp (50us)")
-    plt.ylabel("Delivery Rate (GB/s)")
+    plt.xlabel("timestamp (us)")
+    plt.ylabel("Delivery Rate (Gbps)")
 
     alpha, rate, target_rate, stage = data_reader.get_node_running_data(node_id)
 
@@ -42,8 +40,8 @@ def main(data_reader, node_id):
         rate[ts-1] = last_rate
         last_rate = rate[ts]
     X, Y = get_X_Y_from_ts_dict(rate)
-    X = [each / TS_WINDOW for each in X]
-    Y = [each / (1 << 30) / 8 for each in Y]
+    X = [each // TS_WINDOW * TS_WINDOW / 1000000 for each in X]
+    Y = [each / 1000000000 for each in Y]
     ax.plot(X, Y, color="red", label = "Current Rate")
 
     # plot target rate
@@ -53,15 +51,15 @@ def main(data_reader, node_id):
         target_rate[ts-1] = last_rate
         last_rate = target_rate[ts]
     X, Y = get_X_Y_from_ts_dict(target_rate)
-    X = [each / TS_WINDOW for each in X]
-    Y = [each / (1 << 30) / 8 for each in Y]
+    X = [each // TS_WINDOW * TS_WINDOW / 1000000 for each in X]
+    Y = [each / 1000000000 for each in Y]
     plt.plot(X, Y, color="gray", label = "Target Rate")
 
     leg = plt.legend(loc='upper left')
 
     # plot alpha
     X, Y = get_X_Y_from_ts_dict(alpha)
-    X = [each / TS_WINDOW for each in X]
+    X = [each // TS_WINDOW * TS_WINDOW / 1000000 for each in X]
     ax2 = ax.twinx()
     plt.plot(X, Y, color="green", label = "Alpha")
 
@@ -72,8 +70,8 @@ def main(data_reader, node_id):
         stage[ts-1] = last_stage
         last_stage = stage[ts]
     X, Y = get_X_Y_from_ts_dict(stage)
-    X = [each / TS_WINDOW for each in X]
-    plt.plot(X, Y, "--", color="yellow", label = "Stage")
+    X = [each // TS_WINDOW * TS_WINDOW / 1000000 for each in X]
+    plt.plot(X, Y, "--", color="orange", label = "Stage")
 
     plt.ylim((0, 6.2))
     # plt.xlim((2000000000 / TS_WINDOW, 2010000000 / TS_WINDOW))

@@ -13,9 +13,10 @@ def lazy_load_node_pkl(node_pkl_filename_template):
 
             try:
                 ret = load_pkl(pkl_path)
+                print(f"Load data from existing pkl {pkl_path}")
                 return ret
             except Exception as e:
-                print("Error while loading pickle from {}, {}".format(pkl_path, e))
+                print(f"No existing pkl found in {pkl_path}, will generate it from raw data".format(pkl_path, e))
 
             ret = func(data_reader, node_id)
             save_pkl(ret, pkl_path)
@@ -77,9 +78,9 @@ class DataReader:
         for each_event in node_data:
             if (each_event["event"] != "Dequ"):
                 continue
-            ts_per_window = each_event["ts"] // self.ts_window;
-            add_to_dict(bandwidth, ts_per_window, 0)
-            bandwidth[ts_per_window] += each_event["pkg_size"]
+            ts_wrap_down = (each_event["ts"] // self.ts_window) * self.ts_window
+            add_to_dict(bandwidth, ts_wrap_down, 0)
+            bandwidth[ts_wrap_down] += each_event["pkg_size"]
         
         return bandwidth
 

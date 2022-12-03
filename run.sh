@@ -12,16 +12,18 @@ SIMU_STDOUT_FILEPATH=${SIMU_ROOTPATH}/stdout.txt
 ANALYSIS_CONFIG_TEMPLATE=${ANALYSIS_ROOTPATH}/config_TEMPLATE.py
 ANALYSIS_CONFIG=${ANALYSIS_ROOTPATH}/config.py
 
-NODE_ID=2
+NODE_IDS="2"
 
 function main() {
-    mkdir ${DATA_PATH}
+    mkdir -p ${DATA_PATH}
     cd ${SIMU_ROOTPATH}
-    # ./waf --run 'scratch/third mix/config.txt' > ${SIMU_STDOUT_FILEPATH}
+    echo "Running simulation..."
+    ./waf --run 'scratch/third mix/config.txt' > ${SIMU_STDOUT_FILEPATH}
     (( $? != 0)) && echo "Run simulation failed" && exit -1
 
     cd ${ROOTPATH}
 
+    echo "Copying config files and tracing files"
     cp ${SIMU_STDOUT_FILEPATH} ${DATA_PATH}
     files=$(cat ${SIMU_CONFIG} | grep FILE | awk '{print $2}')
     for file in ${files[@]}; do
@@ -34,7 +36,11 @@ function main() {
 
     sed "s/<data_time_str>/${time_str}/g" ${ANALYSIS_CONFIG_TEMPLATE} > ${ANALYSIS_CONFIG}
 
-    python3 plot.py ${NODE_ID}
+    echo "Ploting diagram for node "
+    for node_id in ${NODE_IDS[@]}; do
+        python3 plot.py ${node_id}
+        echo "Node ${node_id} Diagram generated to ${DATA_PATH}/node_${node_id}_bw.png"
+    done
 }
 
 main "$*"
