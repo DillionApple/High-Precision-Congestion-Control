@@ -12,7 +12,7 @@ SIMU_STDOUT_FILEPATH=${SIMU_ROOTPATH}/stdout.txt
 ANALYSIS_CONFIG_TEMPLATE=${ANALYSIS_ROOTPATH}/config_template.py
 ANALYSIS_CONFIG=${ANALYSIS_ROOTPATH}/config.py
 
-NODE_IDS="2"
+NODE_IDS="2 3 4"
 
 function main() {
     mkdir -p ${DATA_PATH}
@@ -24,6 +24,7 @@ function main() {
     cd ${ROOTPATH}
 
     echo "Copying config files and tracing files"
+    cp ${SIMU_CONFIG} ${DATA_PATH}
     cp ${SIMU_STDOUT_FILEPATH} ${DATA_PATH}
     files=$(cat ${SIMU_CONFIG} | grep FILE | awk '{print $2}')
     for file in ${files[@]}; do

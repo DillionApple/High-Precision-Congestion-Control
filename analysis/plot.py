@@ -28,7 +28,7 @@ def main(data_reader, node_id):
 
     fig, ax = plt.subplots(1, 1)
     ax.plot(X, Y, color="blue", label = "Deliver Rate")
-    plt.xlabel("timestamp (us)")
+    plt.xlabel("timestamp (ms)")
     plt.ylabel("Delivery Rate (Gbps)")
 
     alpha, rate, target_rate, stage = data_reader.get_node_running_data(node_id)
@@ -74,7 +74,7 @@ def main(data_reader, node_id):
     plt.plot(X, Y, "--", color="orange", label = "Stage")
 
     plt.ylim((0, 6.2))
-    # plt.xlim((2000000000 / TS_WINDOW, 2010000000 / TS_WINDOW))
+    plt.xlim((PLOT_ST_MS, PLOT_EN_MS))
     
     leg2 = plt.legend(loc='upper right')
 

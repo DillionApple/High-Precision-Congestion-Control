@@ -5,6 +5,38 @@ This is the simulator for [HPCC: High Precision Congestion Control (SIGCOMM' 201
 
 We have update this simulator to support HPCC-PINT, which reduces the INT header overhead to 1 to 2 byte. This improves the long flow completion time. See [PINT: Probabilistic In-band Network Telemetry (SIGCOMM' 2020)](https://liyuliang001.github.io/publications/pint.pdf).
 
+## How to run
+
+### Prepare environment 
+
+```
+sudo ./prepare.sh
+```
+
+### Change the simulation config
+
+* simulation/mix/config.txt         the main simulation configuration options
+* simulation/mix/topology.txt       the topology in the simulation
+* simulation/mix/flow.txt           the flow settings
+* run.sh                            change `NODE_IDS` to select the nodes you want to plot
+
+### Run simulation
+
+```
+./run.sh
+```
+
+### Get results
+
+The results are put in directory `analysis/data/<time_str>`, where `<time_str>` is the time when the simulation starts. After simulation, there should be `node_<id>_bw.png` in the directory.
+
+### Using Docker
+
+```
+docker build . -t ns3env
+docker run --rm -v <host_path_to_project>:/workspace -v <host_path_to_project>/analysis/data:/workspace/analysis/data ns3env run.sh
+```
+
 ## NS-3 simulation
 The ns-3 simulation is under `simulation/`. Refer to the README.md under it for more details.
 
