@@ -76,7 +76,7 @@ class DataReader:
         bandwidth = {} # {time: size}
         node_data = self.get_node_data(node_id)
         for each_event in node_data:
-            if (each_event["event"] != "Dequ"):
+            if (each_event["event"] != "Dequ" and each_event["event"] != "Recv"):
                 continue
             ts_wrap_down = (each_event["ts"] // self.ts_window) * self.ts_window
             add_to_dict(bandwidth, ts_wrap_down, 0)
