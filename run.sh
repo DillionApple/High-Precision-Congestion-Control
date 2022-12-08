@@ -6,7 +6,7 @@ DATA_ROOTPATH=${ANALYSIS_ROOTPATH}/data
 
 NODE_IDS="1 2 3 4 5"
 RERUN=1
-if [ ${RERUN} == 0 ]; then
+if [ ${RERUN} == 1 ]; then
     time_str=$(date +%Y%m%d-%H%M%S)
 else
     time_str="<data_folder>"
