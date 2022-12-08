@@ -15,10 +15,11 @@ sudo ./prepare.sh
 
 ### Change the simulation config
 
-* simulation/mix/config.txt         the main simulation configuration options
-* simulation/mix/topology.txt       the topology in the simulation
-* simulation/mix/flow.txt           the flow settings
-* run.sh                            change `NODE_IDS` to select the nodes you want to plot
+* `simulation/mix/config.txt`:         the main simulation configuration options, check `simulation/mix/config_doc.txt` for explaination
+* `simulation/mix/topology.txt`:       the topology in the simulation
+* `simulation/mix/flow.txt`:           the flow settings
+* `analysis/config.py`:                the configuration for plot
+* `run.sh`:                            change `NODE_IDS` to select the nodes you want to plot
 
 ### Run simulation
 

@@ -3,7 +3,7 @@ import re
 import pickle
 
 from utils import *
-from config import *
+from config_tmp import *
 
 def lazy_load_node_pkl(node_pkl_filename_template):
     def decorator(func):

@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 from data import *
 from utils import *
-from config import *
+from config_tmp import *
 
 plt.rcParams["figure.figsize"] = [50, 7]
 plt.rcParams["figure.autolayout"] = True
