@@ -616,7 +616,7 @@ void RdmaHw::ChangeRate(Ptr<RdmaQueuePair> qp, DataRate new_rate){
  * Mellanox's version of DCQCN
  *****************************/
 void RdmaHw::UpdateAlphaMlx(Ptr<RdmaQueuePair> q){
-	fprintf(stdout, "%ld %d alpha %f cnp_received %d\n", Simulator::Now().GetNanoSeconds(), m_node->GetId(), q->mlx.m_alpha, (int)q->mlx.m_alpha_cnp_arrived , 0);
+	fprintf(stdout, "%ld %d alpha %f cnp_received %d\n", Simulator::Now().GetNanoSeconds(), m_node->GetId(), q->mlx.m_alpha, (int)q->mlx.m_alpha_cnp_arrived);
 	#if PRINT_LOG
 	//std::cout << Simulator::Now() << " alpha update:" << m_node->GetId() << ' ' << q->mlx.m_alpha << ' ' << (int)q->mlx.m_alpha_cnp_arrived << '\n';
 	//printf("%lu alpha update: %08x %08x %u %u %.6lf->", Simulator::Now().GetTimeStep(), q->sip.Get(), q->dip.Get(), q->sport, q->dport, q->mlx.m_alpha);
@@ -826,6 +826,7 @@ void RdmaHw::UpdateRateHp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &ch
 				qp->hp.hop[i] = ih.hop[i];
 			}
 
+
 			DataRate new_rate;
 			int32_t new_incStage;
 			DataRate new_rate_per_hop[IntHeader::maxHop];
@@ -896,8 +897,10 @@ void RdmaHw::UpdateRateHp(Ptr<RdmaQueuePair> qp, Ptr<Packet> p, CustomHeader &ch
 				printf("\n");
 				#endif
 			}
-			if (updated_any)
+			if (updated_any) {
 				ChangeRate(qp, new_rate);
+				fprintf(stdout, "%ld %d rate %ld\n", Simulator::Now().GetNanoSeconds(), m_node->GetId(), qp->m_rate);
+			}
 			if (!fast_react){
 				if (updated_any){
 					qp->hp.m_curRate = new_rate;
