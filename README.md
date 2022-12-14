@@ -15,11 +15,25 @@ sudo ./prepare.sh
 
 ### Change the simulation config
 
-* `simulation/mix/config.txt`:         the main simulation configuration options, check `simulation/mix/config_doc.txt` for explaination
-* `simulation/mix/topology.txt`:       the topology in the simulation
-* `simulation/mix/flow.txt`:           the flow settings
-* `analysis/config.py`:                the configuration for plot
-* `run.sh`:                            change `NODE_IDS` to select the nodes you want to plot
+* `simulation/mix/config.txt`:
+
+The main simulation configuration options, check `simulation/mix/config_doc.txt` for explaination. There are example configs for some CC algorithm, e.g., `simulation/mix/config_DCQCN.txt`, `simulation/mix/config_HPCC.txt`, and copy the content to `simulation/mix/config.txt` to make the config take effect.
+
+* `simulation/mix/topology.txt`
+
+The topology in the simulation
+
+* `simulation/mix/flow.txt`
+
+The flow settings
+
+* `analysis/config.py`
+
+The configuration for plot
+
+* `run.sh`
+
+Change `NODE_IDS` to select the nodes you want to plot
 
 ### Run simulation
 
