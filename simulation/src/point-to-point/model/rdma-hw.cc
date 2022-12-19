@@ -151,17 +151,17 @@ TypeId RdmaHw::GetTypeId (void)
 				MakeDoubleChecker<double>())
 		.AddAttribute("TimelyTLow",
 				"TLow of TIMELY (ns)",
-				UintegerValue(50000),
+				UintegerValue(5000),
 				MakeUintegerAccessor(&RdmaHw::m_tmly_TLow),
 				MakeUintegerChecker<uint64_t>())
 		.AddAttribute("TimelyTHigh",
 				"THigh of TIMELY (ns)",
-				UintegerValue(500000),
+				UintegerValue(10000),
 				MakeUintegerAccessor(&RdmaHw::m_tmly_THigh),
 				MakeUintegerChecker<uint64_t>())
 		.AddAttribute("TimelyMinRtt",
 				"MinRtt of TIMELY (ns)",
-				UintegerValue(20000),
+				UintegerValue(4500),
 				MakeUintegerAccessor(&RdmaHw::m_tmly_minRtt),
 				MakeUintegerChecker<uint64_t>())
 		.AddAttribute("DctcpRateAI",
